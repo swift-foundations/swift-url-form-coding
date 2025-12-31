@@ -96,51 +96,6 @@ encoder3.arrayEncodingStrategy = .bracketsWithIndices
 // Result: "tags[0]=swift&tags[1]=ios&tags[2]=server"
 ```
 
-### URLRouting Integration
-
-Enable URLRouting support using Swift Package Manager traits:
-
-```swift
-// In your Package.swift
-dependencies: [
-    .package(
-        url: "https://github.com/coenttb/swift-url-form-coding",
-        from: "0.1.0",
-        traits: ["URLRouting"]  // Enable URLRouting trait
-    )
-]
-```
-
-Then use with URLRouting:
-
-```swift
-import URLFormCoding  // URLRouting is conditionally exported when trait is enabled
-
-struct ContactForm: Codable {
-    let name: String
-    let email: String
-    let message: String
-}
-
-let contactRoute = Route {
-    Method.post
-    Path { "contact" }
-    Body(.form(ContactForm.self))
-}
-```
-
-## URLRouting Trait
-
-The `URLRouting` trait provides integration with PointFree's [swift-url-routing](https://github.com/pointfreeco/swift-url-routing). When enabled, it:
-- Makes `Form.Conversion<T>` conform to `URLRouting.Conversion`
-- Provides `.form(_:)` convenience method on `Conversion`
-- Re-exports URLRouting for convenient access
-
-To run tests with URLRouting support:
-```bash
-swift test --traits URLRouting
-```
-
 ## Dependencies
 
 - [swift-rfc-2388](https://github.com/swift-standards/swift-rfc-2388) - Form data parsing/encoding strategies
