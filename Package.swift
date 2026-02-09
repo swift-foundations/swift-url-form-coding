@@ -11,7 +11,7 @@ extension String { var tests: Self { self + " Tests" } }
 extension Target.Dependency {
     static var urlFormCoding: Self { .target(name: .urlFormCoding) }
     static var rfc2388: Self { .product(name: "RFC 2388", package: "swift-rfc-2388") }
-    static var whatwgUrlEncoding: Self { .product(name: "WHATWG URL Encoding", package: "swift-whatwg-url-encoding") }
+    static var whatwgUrlEncoding: Self { .product(name: "WHATWG Form URL Encoded", package: "swift-whatwg-url") }
 }
 
 let package = Package(
@@ -27,7 +27,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/swift-standards/swift-rfc-2388", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-whatwg-url-encoding.git", from: "0.1.0")
+        .package(url: "https://github.com/swift-standards/swift-whatwg-url", from: "0.1.0")
     ],
     targets: [
         .target(

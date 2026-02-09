@@ -9,7 +9,7 @@
 //
 
 import Foundation
-import WHATWG_URL_Encoding
+import WHATWG_Form_URL_Encoded
 import RFC_2388
 
 /// An encoder that converts Swift Codable types to URL-encoded form data.
@@ -384,7 +384,7 @@ extension Form {
         }
 
         mutating func encode(_ value: String) throws {
-            let encoded = WHATWG_URL_Encoding.percentEncode(value, spaceAsPlus: true)
+            let encoded = WHATWG_Form_URL_Encoded.percentEncode(value, spaceAsPlus: true)
             self.encoder.container = .singleValue(encoded)
         }
 

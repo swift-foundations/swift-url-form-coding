@@ -9,7 +9,7 @@
 //
 
 import Foundation
-import WHATWG_URL_Encoding
+import WHATWG_Form_URL_Encoded
 import RFC_2388
 
 /// A decoder that converts URL-encoded form data to Swift Codable types.
