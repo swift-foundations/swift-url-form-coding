@@ -25,6 +25,12 @@ let package = Package(
     products: [
         .library(name: .urlFormCoding, targets: [.urlFormCoding])
     ],
+    traits: [
+        .trait(
+            name: "URLRouting",
+            description: "URLRouting integration for URLFormCoding"
+        )
+    ],
     dependencies: [
         .package(url: "https://github.com/swift-standards/swift-rfc-2388", from: "0.1.0"),
         .package(url: "https://github.com/swift-standards/swift-whatwg-url", from: "0.1.0")
