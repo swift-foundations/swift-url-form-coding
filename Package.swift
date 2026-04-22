@@ -32,8 +32,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-standards/swift-rfc-2388", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-whatwg-url", from: "0.1.0")
+        .package(url: "https://github.com/swift-ietf/swift-rfc-2388", from: "0.1.0"),
+        .package(url: "https://github.com/swift-whatwg/swift-whatwg-url", from: "0.1.0")
     ],
     targets: [
         .target(
