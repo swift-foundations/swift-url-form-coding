@@ -14,8 +14,8 @@ extension Target.Dependency {
     static var urlFormCodingURLRouting: Self { .target(name: .urlFormCodingURLRouting) }
     static var rfc2388: Self { .product(name: "RFC 2388", package: "swift-rfc-2388") }
     static var whatwgUrlEncoding: Self { .product(name: "WHATWG Form URL Encoded", package: "swift-whatwg-url") }
-    // TRANSITIONAL — pointfreeco/swift-url-routing, NOT the institute swift-url-routing fork
-    // (its main is a held incompatible rewrite). Recovered from tag 0.1.0's manifest.
+    // Institute fork URL (principal ruling 2026-07-09); pinned to upstream-identical tags
+    // (0.6.2 = pointfree release SHA); do NOT use branch:main until the RFC-first rewrite lands via the routing arc.
     static var urlRouting: Self { .product(name: "URLRouting", package: "swift-url-routing") }
 }
 
@@ -40,10 +40,10 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/swift-ietf/swift-rfc-2388.git", branch: "main"),
         .package(url: "https://github.com/swift-whatwg/swift-whatwg-url.git", branch: "main"),
-        // TRANSITIONAL — pointfreeco/swift-url-routing (recovered spec `from: "0.6.0"`); the
-        // institute swift-url-routing fork's main is a held incompatible rewrite. This backs the
-        // standalone URLFormCodingURLRouting product only; the URLFormCoding product is unaffected.
-        .package(url: "https://github.com/pointfreeco/swift-url-routing", from: "0.6.0")
+        // Institute fork URL (principal ruling 2026-07-09); pinned to upstream-identical tags
+        // (0.6.2 = pointfree release SHA); do NOT use branch:main until the RFC-first rewrite lands via the routing arc.
+        // This backs the standalone URLFormCodingURLRouting product only; the URLFormCoding product is unaffected.
+        .package(url: "https://github.com/swift-foundations/swift-url-routing.git", from: "0.6.0")
     ],
     targets: [
         .target(
