@@ -1056,7 +1056,28 @@ private extension Form.Decoder {
         sort: Bool = false
     ) -> @Sendable (String) -> Container {
         return { query in
-            let formData = RFC_2388.FormData.parse(query, strategy: strategy, sort: sort)
+            // RFC 2388's `FormData.extractPairs` now scans "&"-delimited segments at
+            // the byte level and does NOT omit empty subsequences, unlike the
+            // pre-drift implementation which used `query.split(separator: "&")`
+            // (defaults to `omittingEmptySubsequences: true`). As a result, an empty
+            // query -- or one with a leading/trailing/doubled "&", which arises e.g.
+            // when encoding a dictionary containing an empty array field -- now
+            // yields a spurious `("", nil)` pair. `FormData.insert(value:at:into:)`
+            // treats that pair's empty path as "replace the entire container",
+            // clobbering an already-parsed `.dictionary(["name": ...])` into a bare
+            // `.value("")`. That surfaces here as "Expected keyed container, got
+            // singleValue("")". Rather than editing swift-rfc-2388, sanitize at this
+            // boundary to restore the pre-drift split semantics: drop empty
+            // "&"-separated segments before parsing, and treat a query that
+            // sanitizes to nothing as an empty keyed container so empty
+            // arrays/optionals keep round-tripping.
+            let sanitizedQuery = query
+                .split(separator: "&", omittingEmptySubsequences: true)
+                .joined(separator: "&")
+            guard !sanitizedQuery.isEmpty else {
+                return .keyed([:])
+            }
+            let formData = RFC_2388.FormData.parse(sanitizedQuery, strategy: strategy, sort: sort)
             return convert(formData)
         }
     }

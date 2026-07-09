@@ -384,7 +384,7 @@ extension Form {
         }
 
         mutating func encode(_ value: String) throws {
-            let encoded = WHATWG_Form_URL_Encoded.percentEncode(value, spaceAsPlus: true)
+            let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(value, spaceAsPlus: true)
             self.encoder.container = .singleValue(encoded)
         }
 

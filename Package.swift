@@ -1,29 +1,35 @@
-// swift-tools-version:6.1
+// swift-tools-version: 6.3.1
 
 import PackageDescription
 
 extension String {
     static let urlFormCoding: Self = "URLFormCoding"
+    static let urlFormCodingURLRouting: Self = "URLFormCodingURLRouting"
 }
 
 extension String { var tests: Self { self + " Tests" } }
 
 extension Target.Dependency {
     static var urlFormCoding: Self { .target(name: .urlFormCoding) }
+    static var urlFormCodingURLRouting: Self { .target(name: .urlFormCodingURLRouting) }
     static var rfc2388: Self { .product(name: "RFC 2388", package: "swift-rfc-2388") }
     static var whatwgUrlEncoding: Self { .product(name: "WHATWG Form URL Encoded", package: "swift-whatwg-url") }
+    // TRANSITIONAL — pointfreeco/swift-url-routing, NOT the institute swift-url-routing fork
+    // (its main is a held incompatible rewrite). Recovered from tag 0.1.0's manifest.
+    static var urlRouting: Self { .product(name: "URLRouting", package: "swift-url-routing") }
 }
 
 let package = Package(
     name: "swift-url-form-coding",
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17),
-        .tvOS(.v17),
-        .watchOS(.v10)
+        .macOS(.v26),
+        .iOS(.v26),
+        .tvOS(.v26),
+        .watchOS(.v26)
     ],
     products: [
-        .library(name: .urlFormCoding, targets: [.urlFormCoding])
+        .library(name: .urlFormCoding, targets: [.urlFormCoding]),
+        .library(name: .urlFormCodingURLRouting, targets: [.urlFormCodingURLRouting])
     ],
     traits: [
         .trait(
@@ -32,8 +38,12 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-ietf/swift-rfc-2388", from: "0.1.0"),
-        .package(url: "https://github.com/swift-whatwg/swift-whatwg-url", from: "0.1.0")
+        .package(url: "https://github.com/swift-ietf/swift-rfc-2388.git", branch: "main"),
+        .package(url: "https://github.com/swift-whatwg/swift-whatwg-url.git", branch: "main"),
+        // TRANSITIONAL — pointfreeco/swift-url-routing (recovered spec `from: "0.6.0"`); the
+        // institute swift-url-routing fork's main is a held incompatible rewrite. This backs the
+        // standalone URLFormCodingURLRouting product only; the URLFormCoding product is unaffected.
+        .package(url: "https://github.com/pointfreeco/swift-url-routing", from: "0.6.0")
     ],
     targets: [
         .target(
@@ -41,6 +51,17 @@ let package = Package(
             dependencies: [
                 .rfc2388,
                 .whatwgUrlEncoding
+            ]
+        ),
+        // Standalone URLRouting integration. Vends the module `URLFormCodingURLRouting` with an
+        // unconditional URLRouting dependency, so consumers use the product WITHOUT enabling the
+        // package-level "URLRouting" trait. The trait remains declared only to gate the main
+        // target's optional `@_exported import URLRouting` in exports.swift (default off).
+        .target(
+            name: .urlFormCodingURLRouting,
+            dependencies: [
+                .urlFormCoding,
+                .urlRouting
             ]
         ),
         .testTarget(
