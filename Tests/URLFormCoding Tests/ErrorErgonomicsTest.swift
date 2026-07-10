@@ -1,27 +1,28 @@
-import Testing
 import Foundation
+import Testing
+
 @testable import URLFormCoding
 
 @Suite("Error Ergonomics")
 struct ErrorErgonomicsTest {
-    
+
     @Test("Strategy mismatch provides clear error message")
     func testStrategyMismatchError() throws {
         // Encode with bracketsWithIndices, decode with accumulateValues
         let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
         let decoder = Form.Decoder(arrayParsingStrategy: .accumulateValues)
-        
+
         struct Model: Codable {
             let name: String
             let tags: [String]
         }
-        
+
         let model = Model(name: "Test", tags: ["swift", "ios", "server"])
         let encoded = try encoder.encode(model)
         let encodedString = String(data: encoded, encoding: .utf8)!
-        
+
         print("Encoded with bracketsWithIndices: \(encodedString)")
-        
+
         // This will fail because accumulateValues expects "tags=swift&tags=ios"
         // but gets "tags[0]=swift&tags[1]=ios"
         do {
@@ -34,14 +35,17 @@ struct ErrorErgonomicsTest {
             // Check that the error is informative
             let errorString = String(describing: error)
             // The error should indicate the issue with the array/tags field
-            #expect(errorString.contains("tags") || errorString.contains("Array") || errorString.contains("expected"))
+            #expect(
+                errorString.contains("tags") || errorString.contains("Array")
+                    || errorString.contains("expected")
+            )
         }
     }
-    
+
     @Test("Mixed bracket styles provide clear error")
     func testMixedBracketStylesError() throws {
         let decoder = Form.Decoder(arrayParsingStrategy: .brackets)
-        
+
         // Mixed styles: empty brackets and indexed brackets
         // RFC 2388 implementation handles mixed styles more gracefully than the old implementation
         let queryString = "tags[]=first&tags[1]=second&tags[]=third"
@@ -59,20 +63,20 @@ struct ErrorErgonomicsTest {
         #expect(decoded.tags.contains("second"))
         #expect(decoded.tags.contains("third"))
     }
-    
+
     @Test("Wrong strategy for encoded data provides helpful guidance")
     func testWrongStrategyGuidance() throws {
         // Data encoded with accumulate values
-        let accumulateData = "name=Test&tags=swift&tags=ios&tags=server".data(using: .utf8)!
-        
+        let accumulateData = Data("name=Test&tags=swift&tags=ios&tags=server".utf8)
+
         // Try to decode with bracketsWithIndices
         let decoder = Form.Decoder(arrayParsingStrategy: .bracketsWithIndices)
-        
+
         struct Model: Codable {
             let name: String
             let tags: [String]
         }
-        
+
         do {
             let decoded = try decoder.decode(Model.self, from: accumulateData)
             print("Decoded with wrong strategy: \(decoded)")
@@ -84,14 +88,14 @@ struct ErrorErgonomicsTest {
             #expect(errorString.contains("tags") || errorString.contains("Array"))
         }
     }
-    
+
     @Test("Detects strategy from data format")
     func testStrategyDetection() throws {
         // Test if we can detect the right strategy from the data format
-        let bracketsData = "tags[0]=swift&tags[1]=ios".data(using: .utf8)!
-        let accumulateData = "tags=swift&tags=ios".data(using: .utf8)!
-        let emptyBracketsData = "tags[]=swift&tags[]=ios".data(using: .utf8)!
-        
+        let bracketsData = Data("tags[0]=swift&tags[1]=ios".utf8)
+        let accumulateData = Data("tags=swift&tags=ios".utf8)
+        let emptyBracketsData = Data("tags[]=swift&tags[]=ios".utf8)
+
         // Helper to detect strategy
         func detectStrategy(from data: Data) -> String {
             let string = String(data: data, encoding: .utf8) ?? ""
@@ -104,12 +108,12 @@ struct ErrorErgonomicsTest {
             }
             return "unknown"
         }
-        
+
         #expect(detectStrategy(from: bracketsData) == "bracketsWithIndices")
         #expect(detectStrategy(from: accumulateData) == "accumulateValues")
         #expect(detectStrategy(from: emptyBracketsData) == "brackets")
     }
-    
+
     @Test("Provides actionable error for incompatible strategies")
     func testActionableStrategyError() throws {
         struct ComplexModel: Codable {
@@ -118,7 +122,7 @@ struct ErrorErgonomicsTest {
             let tags: [String]
             let metadata: [String: String]
         }
-        
+
         let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
         let model = ComplexModel(
             id: 1,
@@ -126,27 +130,25 @@ struct ErrorErgonomicsTest {
             tags: ["swift", "ios"],
             metadata: ["version": "1.0", "author": "test"]
         )
-        
+
         let encoded = try encoder.encode(model)
         let encodedString = String(data: encoded, encoding: .utf8)!
         print("Complex model encoded: \(encodedString)")
-        
+
         // Try to decode with wrong strategy
         let decoder = Form.Decoder(arrayParsingStrategy: .accumulateValues)
-        
+
         do {
             _ = try decoder.decode(ComplexModel.self, from: encoded)
             #expect(Bool(false), "Should have thrown an error")
         } catch {
             let errorString = String(describing: error)
             print("Complex model error: \(errorString)")
-            
+
             // Error should mention the problematic field or give guidance
             #expect(
-                errorString.contains("tags") ||
-                errorString.contains("metadata") ||
-                errorString.contains("Array") ||
-                errorString.contains("Dictionary")
+                errorString.contains("tags") || errorString.contains("metadata")
+                    || errorString.contains("Array") || errorString.contains("Dictionary")
             )
         }
     }

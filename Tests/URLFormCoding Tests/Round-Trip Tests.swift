@@ -11,9 +11,9 @@ import URLFormCoding
 
 @Suite("URLFormCoding Round-Trip Tests")
 struct URLFormCodingRoundTripTests {
-    
+
     // MARK: - Test Models
-    
+
     struct MessageRequest: Codable, Equatable {
         let from: String
         let to: [String]
@@ -25,17 +25,17 @@ struct URLFormCodingRoundTripTests {
         let tags: [String]?
         let testMode: Bool?
     }
-    
+
     struct SimpleArrayModel: Codable, Equatable {
         let name: String
         let tags: [String]
     }
-    
+
     struct OptionalArrayModel: Codable, Equatable {
         let name: String
         let tags: [String]?
     }
-    
+
     struct MixedTypesModel: Codable, Equatable {
         let name: String
         let age: Int
@@ -44,9 +44,9 @@ struct URLFormCodingRoundTripTests {
         let isActive: Bool?
         let metadata: [String: String]?
     }
-    
+
     // MARK: - Basic Round-Trip Tests
-    
+
     @Test("Basic array round-trip with accumulate values (default)")
     func testBasicArrayRoundTripWithAccumulateValues() throws {
         let encoder = Form.Encoder(
@@ -55,46 +55,46 @@ struct URLFormCodingRoundTripTests {
         let decoder = Form.Decoder(
             arrayParsingStrategy: .accumulateValues
         )
-        
+
         let original = SimpleArrayModel(
             name: "Test",
             tags: ["swift", "ios", "server"]
         )
-        
+
         let encoded = try encoder.encode(original)
         let decoded = try decoder.decode(SimpleArrayModel.self, from: encoded)
-        
+
         #expect(decoded == original)
     }
-    
+
     @Test("Optional array round-trip with bracketsWithIndices")
     func testOptionalArrayRoundTripWithBracketsWithIndices() throws {
         let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
         let decoder = Form.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
-        
+
         let original = OptionalArrayModel(
             name: "Test",
             tags: ["swift", "ios", "server"]
         )
-        
+
         let encoded = try encoder.encode(original)
         let encodedString = String(data: encoded, encoding: .utf8)!
         print("Encoded: \(encodedString)")
-        
+
         let decoded = try decoder.decode(OptionalArrayModel.self, from: encoded)
-        
+
         #expect(decoded == original)
     }
-    
+
     @Test("Message request round-trip with bracketsWithIndices (Mailgun scenario)")
     func testMessageRequestRoundTripWithBracketsWithIndices() throws {
         let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
         let decoder = Form.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
-        
+
         let original = MessageRequest(
             from: "sender@test.com",
             to: ["recipient@test.com"],
@@ -106,13 +106,13 @@ struct URLFormCodingRoundTripTests {
             tags: ["test-tag"],
             testMode: true
         )
-        
+
         let encoded = try encoder.encode(original)
         let encodedString = String(data: encoded, encoding: .utf8)!
         print("Encoded message request: \(encodedString)")
-        
+
         let decoded = try decoder.decode(MessageRequest.self, from: encoded)
-        
+
         #expect(decoded.from == original.from)
         #expect(decoded.to == original.to)
         #expect(decoded.subject == original.subject)
@@ -124,53 +124,53 @@ struct URLFormCodingRoundTripTests {
         #expect(decoded.testMode == original.testMode)
         #expect(decoded == original)
     }
-    
+
     @Test("Empty arrays round-trip")
     func testEmptyArraysRoundTrip() throws {
         let encoder = Form.Encoder()
         let decoder = Form.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
-        
+
         let original = OptionalArrayModel(
             name: "Test",
             tags: []
         )
-        
+
         let encoded = try encoder.encode(original)
         let decoded = try decoder.decode(OptionalArrayModel.self, from: encoded)
-        
+
         // Empty arrays become nil in form encoding (this is a known limitation)
         // There's no way to distinguish between empty array and nil in URL form data
         #expect(decoded.name == original.name)
         #expect(decoded.tags == nil)  // Empty array becomes nil
     }
-    
+
     @Test("Nil arrays round-trip")
     func testNilArraysRoundTrip() throws {
         let encoder = Form.Encoder()
         let decoder = Form.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
-        
+
         let original = OptionalArrayModel(
             name: "Test",
             tags: nil
         )
-        
+
         let encoded = try encoder.encode(original)
         let decoded = try decoder.decode(OptionalArrayModel.self, from: encoded)
-        
+
         #expect(decoded == original)
     }
-    
+
     @Test("Mixed types with optional arrays round-trip")
     func testMixedTypesRoundTrip() throws {
         let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
         let decoder = Form.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
-        
+
         let original = MixedTypesModel(
             name: "Test User",
             age: 30,
@@ -179,23 +179,23 @@ struct URLFormCodingRoundTripTests {
             isActive: true,
             metadata: ["key1": "value1", "key2": "value2"]
         )
-        
+
         let encoded = try encoder.encode(original)
         let encodedString = String(data: encoded, encoding: .utf8)!
         print("Encoded mixed types: \(encodedString)")
-        
+
         let decoded = try decoder.decode(MixedTypesModel.self, from: encoded)
-        
+
         #expect(decoded == original)
     }
-    
+
     @Test("Mixed types with nil optionals round-trip")
     func testMixedTypesWithNilsRoundTrip() throws {
         let encoder = Form.Encoder()
         let decoder = Form.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
-        
+
         let original = MixedTypesModel(
             name: "Test User",
             age: 30,
@@ -204,28 +204,28 @@ struct URLFormCodingRoundTripTests {
             isActive: nil,
             metadata: nil
         )
-        
+
         let encoded = try encoder.encode(original)
         let decoded = try decoder.decode(MixedTypesModel.self, from: encoded)
-        
+
         #expect(decoded == original)
     }
-    
+
     // MARK: - Strategy Mismatch Tests
-    
+
     @Test("Arrays fail with mismatched strategies")
     func testArraysFailWithMismatchedStrategies() throws {
         let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
         // Using default decoder (accumulateValues) when encoder produces bracketed indices
         let decoder = Form.Decoder()
-        
+
         let original = OptionalArrayModel(
             name: "Test",
             tags: ["swift", "ios", "server"]
         )
-        
+
         let encoded = try encoder.encode(original)
-        
+
         // This should fail or produce incorrect results
         // because the default decoder expects repeated keys, not bracketed indices
         do {
@@ -237,9 +237,9 @@ struct URLFormCodingRoundTripTests {
             #expect(error != nil)
         }
     }
-    
+
     // MARK: - Date Strategy Tests
-    
+
     @Test("Round-trip with custom date strategies")
     func testRoundTripWithDateStrategies() throws {
         struct ModelWithDate: Codable, Equatable {
@@ -247,7 +247,7 @@ struct URLFormCodingRoundTripTests {
             let createdAt: Date
             let tags: [String]?
         }
-        
+
         let encoder = Form.Encoder(
             dateEncodingStrategy: .secondsSince1970,
             arrayEncodingStrategy: .bracketsWithIndices
@@ -256,22 +256,22 @@ struct URLFormCodingRoundTripTests {
             dateDecodingStrategy: .secondsSince1970,
             arrayParsingStrategy: .bracketsWithIndices
         )
-        
-        let date = Date(timeIntervalSince1970: 1234567890)
+
+        let date = Date(timeIntervalSince1970: 1_234_567_890)
         let original = ModelWithDate(
             name: "Test",
             createdAt: date,
             tags: ["tag1", "tag2"]
         )
-        
+
         let encoded = try encoder.encode(original)
         let decoded = try decoder.decode(ModelWithDate.self, from: encoded)
-        
+
         #expect(decoded == original)
     }
-    
+
     // MARK: - Complex Nested Structure Tests
-    
+
     @Test("Complex nested structure round-trip")
     func testComplexNestedStructureRoundTrip() throws {
         struct NestedModel: Codable, Equatable {
@@ -282,7 +282,7 @@ struct URLFormCodingRoundTripTests {
             let name: String
             let items: [Inner]?
         }
-        
+
         let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
         let decoder = Form.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
@@ -293,16 +293,16 @@ struct URLFormCodingRoundTripTests {
             items: [
                 NestedModel.Inner(id: 1, tags: ["a", "b"]),
                 NestedModel.Inner(id: 2, tags: ["c", "d"]),
-                NestedModel.Inner(id: 3, tags: nil)
+                NestedModel.Inner(id: 3, tags: nil),
             ]
         )
-        
+
         let encoded = try encoder.encode(original)
         let encodedString = String(data: encoded, encoding: .utf8)!
         print("Encoded nested structure: \(encodedString)")
-        
+
         let decoded = try decoder.decode(NestedModel.self, from: encoded)
-        
+
         #expect(decoded == original)
     }
 }

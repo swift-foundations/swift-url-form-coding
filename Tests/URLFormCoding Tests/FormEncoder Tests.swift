@@ -240,7 +240,7 @@ struct FormEncoderTests {
         @Test("Encodes dates with default strategy")
         func testEncodesDatesWithDefaultStrategy() throws {
             let encoder = Form.Encoder()
-            let date = Date(timeIntervalSince1970: 1234567890) // Fixed date for testing
+            let date = Date(timeIntervalSince1970: 1_234_567_890)  // Fixed date for testing
             let user = UserWithDates(
                 name: "Ivy",
                 createdAt: date,
@@ -259,7 +259,7 @@ struct FormEncoderTests {
         func testEncodesDatesAsSecondsSince1970() throws {
             let encoder = Form.Encoder(dateEncodingStrategy: .secondsSince1970)
 
-            let date = Date(timeIntervalSince1970: 1234567890)
+            let date = Date(timeIntervalSince1970: 1_234_567_890)
             let user = UserWithDates(
                 name: "Jack",
                 createdAt: date,
@@ -299,7 +299,7 @@ struct FormEncoderTests {
             formatter.dateFormat = "yyyy-MM-dd"
             let encoder = Form.Encoder(dateEncodingStrategy: .formatted(formatter))
 
-            let date = Date(timeIntervalSince1970: 1234567890) // 2009-02-13
+            let date = Date(timeIntervalSince1970: 1_234_567_890)  // 2009-02-13
             let user = UserWithDates(
                 name: "Liam",
                 createdAt: date,
@@ -323,7 +323,7 @@ struct FormEncoderTests {
         @Test("Encodes data as array by default")
         func testEncodesDataAsArrayByDefault() throws {
             let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-            let testData = "Hello".data(using: .utf8)! // Shorter for clearer testing
+            let testData = Data("Hello".utf8)  // Shorter for clearer testing
             let user = UserWithData(
                 name: "Maya",
                 avatar: testData,
@@ -346,7 +346,7 @@ struct FormEncoderTests {
         func testEncodesDataWithBase64Strategy() throws {
             let encoder = Form.Encoder(dataEncodingStrategy: .base64)
 
-            let testData = "Hello World".data(using: .utf8)!
+            let testData = Data("Hello World".utf8)
             let user = UserWithData(
                 name: "Noah",
                 avatar: testData,
@@ -421,7 +421,7 @@ struct FormEncoderTests {
             let encoder = Form.Encoder(dateEncodingStrategy: .secondsSince1970)
             let decoder = Form.Decoder(dateDecodingStrategy: .secondsSince1970)
 
-            let date = Date(timeIntervalSince1970: 1234567890)
+            let date = Date(timeIntervalSince1970: 1_234_567_890)
             let original = UserWithDates(
                 name: "Ruby",
                 createdAt: date,
@@ -450,7 +450,7 @@ struct FormEncoderTests {
             let queryString = String(data: data, encoding: .utf8)!
 
             #expect(queryString.contains("name="))
-            #expect(queryString.count > 10000) // Should contain the long string
+            #expect(queryString.count > 10000)  // Should contain the long string
         }
 
         @Test("Handles Unicode characters")
@@ -579,8 +579,8 @@ struct FormEncoderTests {
             // WHATWG unreserved characters (not encoded): A-Z a-z 0-9 - . _ *
             // Note: ~ is encoded in WHATWG (unlike RFC 3986)
             #expect(queryString.contains("abc123-_."))  // these should be unencoded
-            #expect(queryString.contains("*"))          // * should be unencoded
-            #expect(!queryString.contains("%2A"))       // * should NOT be encoded as %2A
+            #expect(queryString.contains("*"))  // * should be unencoded
+            #expect(!queryString.contains("%2A"))  // * should NOT be encoded as %2A
 
             // Characters that should be encoded (including ~)
             #expect(queryString.contains("%7E"))  // ~ should be encoded

@@ -66,7 +66,7 @@ struct FormDecoderTests {
 
             let user = try decoder.decode(BasicUser.self, from: data)
 
-            #expect(user.name == "")
+            #expect(user.name.isEmpty)
             #expect(user.age == 0)
             #expect(user.isActive == false)
         }
@@ -111,7 +111,8 @@ struct FormDecoderTests {
             let decoder = Form.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
-            let queryString = "name=Alice&profile[bio]=Developer&profile[website]=https%3A//example.com"
+            let queryString =
+                "name=Alice&profile[bio]=Developer&profile[website]=https%3A//example.com"
             let data = Data(queryString.utf8)
 
             let user = try decoder.decode(NestedUser.self, from: data)
@@ -174,7 +175,8 @@ struct FormDecoderTests {
             let decoder = Form.Decoder()
             decoder.arrayParsingStrategy = .accumulateValues
 
-            let queryString = "name=Charlie&tags=swift&tags=ios&tags=developer&scores=85&scores=92&scores=78"
+            let queryString =
+                "name=Charlie&tags=swift&tags=ios&tags=developer&scores=85&scores=92&scores=78"
             let data = Data(queryString.utf8)
 
             let user = try decoder.decode(UserWithArrays.self, from: data)
@@ -189,7 +191,8 @@ struct FormDecoderTests {
             let decoder = Form.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
-            let queryString = "name=Diana&tags[]=swift&tags[]=ios&tags[]=developer&scores[]=85&scores[]=92&scores[]=78"
+            let queryString =
+                "name=Diana&tags[]=swift&tags[]=ios&tags[]=developer&scores[]=85&scores[]=92&scores[]=78"
             let data = Data(queryString.utf8)
 
             let user = try decoder.decode(UserWithArrays.self, from: data)
@@ -204,7 +207,8 @@ struct FormDecoderTests {
             let decoder = Form.Decoder()
             decoder.arrayParsingStrategy = .bracketsWithIndices
 
-            let queryString = "name=Eve&tags[0]=swift&tags[1]=ios&tags[2]=developer&scores[0]=85&scores[1]=92&scores[2]=78"
+            let queryString =
+                "name=Eve&tags[0]=swift&tags[1]=ios&tags[2]=developer&scores[0]=85&scores[1]=92&scores[2]=78"
             let data = Data(queryString.utf8)
 
             let user = try decoder.decode(UserWithArrays.self, from: data)
@@ -225,7 +229,10 @@ struct FormDecoderTests {
             // Missing required array fields should throw an error
             do {
                 _ = try decoder.decode(UserWithArrays.self, from: data)
-                #expect(Bool(false), "Expected decoding to throw an error for missing required array fields")
+                #expect(
+                    Bool(false),
+                    "Expected decoding to throw an error for missing required array fields"
+                )
             } catch {
                 // This is expected behavior for missing required fields
                 #expect(error is Form.Decoder.Error)
@@ -252,7 +259,8 @@ struct FormDecoderTests {
             let decoder = Form.Decoder()
             decoder.arrayParsingStrategy = .bracketsWithIndices
 
-            let queryString = "name=Henry&tags[2]=developer&tags[0]=swift&tags[1]=ios&scores[1]=92&scores[0]=85&scores[2]=78"
+            let queryString =
+                "name=Henry&tags[2]=developer&tags[0]=swift&tags[1]=ios&scores[1]=92&scores[0]=85&scores[2]=78"
             let data = Data(queryString.utf8)
 
             let user = try decoder.decode(UserWithArrays.self, from: data)
@@ -359,7 +367,7 @@ struct FormDecoderTests {
             let user = try decoder.decode(UserWithDates.self, from: data)
 
             #expect(user.name == "Kate")
-            #expect(user.createdAt.timeIntervalSince1970 == 1234567890)
+            #expect(user.createdAt.timeIntervalSince1970 == 1_234_567_890)
             #expect(user.lastLogin == nil)
         }
 
@@ -374,7 +382,7 @@ struct FormDecoderTests {
             let user = try decoder.decode(UserWithDates.self, from: data)
 
             #expect(user.name == "Liam")
-            #expect(user.createdAt.timeIntervalSince1970 == 1234567890)
+            #expect(user.createdAt.timeIntervalSince1970 == 1_234_567_890)
             #expect(user.lastLogin == nil)
         }
 
@@ -389,7 +397,7 @@ struct FormDecoderTests {
             let user = try decoder.decode(UserWithDates.self, from: data)
 
             #expect(user.name == "Maya")
-            #expect(user.createdAt.timeIntervalSince1970.rounded() == 1234567890)
+            #expect(user.createdAt.timeIntervalSince1970.rounded() == 1_234_567_890)
         }
 
         @Test("Decodes dates with custom formatter")
@@ -422,7 +430,7 @@ struct FormDecoderTests {
             let user = try decoder.decode(UserWithDates.self, from: data)
 
             #expect(user.name == "Olivia")
-            #expect(user.createdAt.timeIntervalSince1970 == 1234567890)
+            #expect(user.createdAt.timeIntervalSince1970 == 1_234_567_890)
             #expect(user.lastLogin == nil)
         }
     }
@@ -437,7 +445,7 @@ struct FormDecoderTests {
             let decoder = Form.Decoder()
             decoder.dataDecodingStrategy = .base64
 
-            let testData = "Hello World".data(using: .utf8)!
+            let testData = Data("Hello World".utf8)
             let base64String = testData.base64EncodedString()
             let queryString = "name=Paul&avatar=\(base64String)"
             let data = Data(queryString.utf8)
@@ -457,7 +465,9 @@ struct FormDecoderTests {
                 var data = Data()
                 var index = string.startIndex
                 while index < string.endIndex {
-                    let nextIndex = string.index(index, offsetBy: 2, limitedBy: string.endIndex) ?? string.endIndex
+                    let nextIndex =
+                        string.index(index, offsetBy: 2, limitedBy: string.endIndex)
+                        ?? string.endIndex
                     let hexString = String(string[index..<nextIndex])
                     if let byte = UInt8(hexString, radix: 16) {
                         data.append(byte)
@@ -467,7 +477,7 @@ struct FormDecoderTests {
                 return data
             }
 
-            let queryString = "name=Quinn&avatar=48656c6c6f" // "Hello" in hex
+            let queryString = "name=Quinn&avatar=48656c6c6f"  // "Hello" in hex
             let data = Data(queryString.utf8)
 
             let user = try decoder.decode(UserWithData.self, from: data)
@@ -481,7 +491,7 @@ struct FormDecoderTests {
             let decoder = Form.Decoder()
             decoder.dataDecodingStrategy = .base64
 
-            let testData = "Test".data(using: .utf8)!
+            let testData = Data("Test".utf8)
             let base64String = testData.base64EncodedString()
             let queryString = "name=Rachel&avatar=\(base64String)"
             let data = Data(queryString.utf8)
@@ -504,7 +514,8 @@ struct FormDecoderTests {
             let decoder = Form.Decoder()
             decoder.arrayParsingStrategy = .accumulateValues
 
-            let queryString = "name=Sam&tags=swift&tags=ios&tags=macos&scores=95&scores=88&scores=92"
+            let queryString =
+                "name=Sam&tags=swift&tags=ios&tags=macos&scores=95&scores=88&scores=92"
             let data = Data(queryString.utf8)
 
             let user = try decoder.decode(UserWithArrays.self, from: data)
@@ -563,7 +574,9 @@ struct FormDecoderTests {
                         if let existing = params[key] {
                             // If key exists, convert to array or append to array
                             if case .singleValue(let existingValue) = existing {
-                                let existingContainer = Form.Decoder.Container.singleValue(existingValue)
+                                let existingContainer = Form.Decoder.Container.singleValue(
+                                    existingValue
+                                )
                                 let newContainer = Form.Decoder.Container.singleValue(value)
                                 params[key] = .unkeyed([existingContainer, newContainer])
                             } else if case .unkeyed(let existingValues) = existing {
@@ -601,7 +614,7 @@ struct FormDecoderTests {
         @Test("Throws error for missing required fields")
         func testThrowsErrorForMissingRequiredFields() throws {
             let decoder = Form.Decoder()
-            let queryString = "age=25" // Missing required 'name' field
+            let queryString = "age=25"  // Missing required 'name' field
             let data = Data(queryString.utf8)
 
             do {
@@ -639,7 +652,7 @@ struct FormDecoderTests {
                 switch error {
                 case .decodingError(let message, _):
                     #expect(message.contains("Int") || message.contains("age"))
-                    // Successfully got a decodingError with appropriate message
+                // Successfully got a decodingError with appropriate message
                 }
             } catch {
                 // Any error is acceptable for invalid input
@@ -697,7 +710,7 @@ struct FormDecoderTests {
             // Test with reasonable nesting depth to avoid stack overflow
             // while still testing security against deeply nested structures
             var deepQuery = "name=test"
-            for i in 0..<50 { // Reduced from 1000 to 50 to prevent stack overflow
+            for i in 0..<50 {  // Reduced from 1000 to 50 to prevent stack overflow
                 deepQuery += "&field\(String(repeating: "[nested]", count: min(i, 10)))=value\(i)"
             }
 
@@ -722,7 +735,9 @@ struct FormDecoderTests {
         func testHandlesVeryLongQueryStrings() throws {
             let decoder = Form.Decoder()
             let longValue = String(repeating: "a", count: 10000)
-            let encoded = longValue.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? longValue
+            let encoded =
+                longValue.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                ?? longValue
             let queryString = "name=\(encoded)&age=25&isActive=true"
             let data = Data(queryString.utf8)
 
@@ -825,7 +840,7 @@ struct FormDecoderTests {
             let encoder = Form.Encoder(dateEncodingStrategy: .secondsSince1970)
             let decoder = Form.Decoder(dateDecodingStrategy: .secondsSince1970)
 
-            let date = Date(timeIntervalSince1970: 1234567890)
+            let date = Date(timeIntervalSince1970: 1_234_567_890)
             let original = UserWithDates(
                 name: "Date User",
                 createdAt: date,
@@ -843,7 +858,7 @@ struct FormDecoderTests {
             let encoder = Form.Encoder(dataEncodingStrategy: .base64)
             let decoder = Form.Decoder(dataDecodingStrategy: .base64)
 
-            let testData = "Hello World".data(using: .utf8)!
+            let testData = Data("Hello World".utf8)
             let original = UserWithData(
                 name: "Data User",
                 avatar: testData,
@@ -935,15 +950,20 @@ private func accumulateValues(_ query: String) -> Form.Decoder.Container {
 }
 
 private func pairs(_ query: String) -> [(String, String?)] {
-    return query
+    return
+        query
         .split(separator: "&")
         .map { pairString -> (name: String, value: String?) in
-            let pairArray = pairString.split(separator: "=", maxSplits: 1, omittingEmptySubsequences: false)
-                .compactMap { substring -> String? in
-                    String(substring)
-                        .replacingOccurrences(of: "+", with: " ")
-                        .removingPercentEncoding
-                }
+            let pairArray = pairString.split(
+                separator: "=",
+                maxSplits: 1,
+                omittingEmptySubsequences: false
+            )
+            .compactMap { substring -> String? in
+                String(substring)
+                    .replacingOccurrences(of: "+", with: " ")
+                    .removingPercentEncoding
+            }
             return (pairArray[0], pairArray.count == 2 ? pairArray[1] : nil)
         }
 }

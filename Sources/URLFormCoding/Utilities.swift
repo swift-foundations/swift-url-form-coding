@@ -11,7 +11,7 @@ precedencegroup ForwardComposition {
     higherThan: ForwardPipe
 }
 
-infix operator >>>: ForwardComposition
+infix operator >>> : ForwardComposition
 
 package func >>> <A, B, C>(f: @escaping (A) -> B, g: @escaping (B) -> C) -> (A) -> C {
     return { a in g(f(a)) }
@@ -22,7 +22,7 @@ precedencegroup ForwardPipe {
     associativity: left
 }
 
-infix operator |>: ForwardPipe
+infix operator |> : ForwardPipe
 
 package func |> <A, B>(a: A, f: (A) -> B) -> B {
     return f(a)
