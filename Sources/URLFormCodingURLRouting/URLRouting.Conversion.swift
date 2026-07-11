@@ -89,7 +89,7 @@ extension URLRouting.Conversion {
         _ type: Value.Type,
         decoder: Form.Decoder = .init(),
         encoder: Form.Encoder = .init()
-    ) -> Conversions.Map<Self, Form.Conversion<Value>> {
+    ) -> Parser.Conversion.Map<Self, Form.Conversion<Value>> {
         self.map(.form(type, decoder: decoder, encoder: encoder))
     }
 }
