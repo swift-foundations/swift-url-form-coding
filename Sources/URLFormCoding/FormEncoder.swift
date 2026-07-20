@@ -38,6 +38,7 @@ import WHATWG_Form_URL_Encoded
 /// The encoder supports various encoding strategies:
 /// - **Date encoding**: ISO8601, seconds since 1970, milliseconds, custom formats
 /// - **Data encoding**: Base64 or custom strategies
+/// - **Bool encoding**: `true`/`false` (default) or `yes`/`no` (Mailgun and other legacy form APIs)
 /// - **Array encoding**: Multiple strategies for handling arrays
 ///   - `.accumulateValues`: field=value1&field=value2
 ///   - `.brackets`: field[]=value1&field[]=value2 (PHP/Rails style)
@@ -66,16 +67,19 @@ extension Form {
         public var dataEncodingStrategy: Form.Encoder.DataEncodingStrategy
         public var dateEncodingStrategy: Form.Encoder.DateEncodingStrategy
         public var arrayEncodingStrategy: Form.Encoder.ArrayEncodingStrategy
+        public var boolEncodingStrategy: Form.Encoder.BoolEncodingStrategy
         public let userInfo: [CodingUserInfoKey: Any] = [:]
 
         public init(
             dataEncodingStrategy: Form.Encoder.DataEncodingStrategy = .deferredToData,
             dateEncodingStrategy: Form.Encoder.DateEncodingStrategy = .deferredToDate,
-            arrayEncodingStrategy: Form.Encoder.ArrayEncodingStrategy = .accumulateValues
+            arrayEncodingStrategy: Form.Encoder.ArrayEncodingStrategy = .accumulateValues,
+            boolEncodingStrategy: Form.Encoder.BoolEncodingStrategy = .trueFalse
         ) {
             self.dataEncodingStrategy = dataEncodingStrategy
             self.dateEncodingStrategy = dateEncodingStrategy
             self.arrayEncodingStrategy = arrayEncodingStrategy
+            self.boolEncodingStrategy = boolEncodingStrategy
         }
 
         public func encode<T: Encodable>(_ value: T) throws -> Data {
@@ -101,7 +105,8 @@ extension Form {
             let encoder = Form.Encoder(
                 dataEncodingStrategy: self.dataEncodingStrategy,
                 dateEncodingStrategy: self.dateEncodingStrategy,
-                arrayEncodingStrategy: self.arrayEncodingStrategy
+                arrayEncodingStrategy: self.arrayEncodingStrategy,
+                boolEncodingStrategy: self.boolEncodingStrategy
             )
             try value.encode(to: encoder)
             guard let container = encoder.container else {
@@ -118,7 +123,8 @@ extension Form {
                 let encoder = Form.Encoder(
                     dataEncodingStrategy: self.dataEncodingStrategy,
                     dateEncodingStrategy: self.dateEncodingStrategy,
-                    arrayEncodingStrategy: self.arrayEncodingStrategy
+                    arrayEncodingStrategy: self.arrayEncodingStrategy,
+                    boolEncodingStrategy: self.boolEncodingStrategy
                 )
                 try date.encode(to: encoder)
                 guard let container = encoder.container else {
@@ -412,7 +418,7 @@ extension Form {
             }
 
             mutating func encode(_ value: Bool) throws {
-                try encode(value ? "true" : "false")
+                try encode(self.encoder.boolEncodingStrategy.encode(value))
             }
 
             mutating func encode(_ value: String) throws {
@@ -590,6 +596,47 @@ extension Form {
                 _ strategy: @escaping @Sendable (Date) -> String
             ) -> DateEncodingStrategy {
                 DateEncodingStrategy(encode: strategy)
+            }
+        }
+
+        /// A strategy for encoding Bool values in URL form data.
+        ///
+        /// You can use one of the built-in strategies or create your own custom strategy.
+        ///
+        /// ## Built-in Strategies
+        /// - ``trueFalse``: Encodes as `"true"`/`"false"` (Swift's default, and this encoder's default)
+        /// - ``yesNo``: Encodes as `"yes"`/`"no"` (Mailgun and other legacy form APIs)
+        ///
+        /// ## Custom Strategies
+        /// You can create custom strategies by providing your own encoding logic:
+        /// ```swift
+        /// extension Form.Encoder.BoolEncodingStrategy {
+        ///     static let numeric = BoolEncodingStrategy { $0 ? "1" : "0" }
+        /// }
+        /// ```
+        ///
+        /// - Note: Mirrors `RFC_2046.Multipart.Encoder`'s `Bool.Encoder` (swift-url-routing),
+        ///   which offers the same `.trueFalse`/`.yesNo` presets for multipart form encoding.
+        public struct BoolEncodingStrategy: Sendable {
+            internal let encode: @Sendable (Bool) -> String
+
+            /// Creates a custom bool encoding strategy.
+            /// - Parameter encode: A closure that takes a Bool and returns the encoded string.
+            public init(encode: @escaping @Sendable (Bool) -> String) {
+                self.encode = encode
+            }
+
+            /// Encodes `true`/`false` as `"true"`/`"false"` (default)
+            public static let trueFalse = BoolEncodingStrategy { $0 ? "true" : "false" }
+
+            /// Encodes `true`/`false` as `"yes"`/`"no"` (Mailgun and other legacy form APIs)
+            public static let yesNo = BoolEncodingStrategy { $0 ? "yes" : "no" }
+
+            /// Creates a custom bool encoding strategy
+            public static func custom(
+                _ strategy: @escaping @Sendable (Bool) -> String
+            ) -> BoolEncodingStrategy {
+                BoolEncodingStrategy(encode: strategy)
             }
         }
 

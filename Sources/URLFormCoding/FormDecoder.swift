@@ -61,6 +61,7 @@ import WHATWG_Form_URL_Encoded
 /// decoder.arrayParsingStrategy = .brackets
 /// decoder.dateDecodingStrategy = .iso8601
 /// decoder.dataDecodingStrategy = .base64
+/// decoder.boolDecodingStrategy = .yesNo
 /// ```
 ///
 /// ## Advanced Features
@@ -83,16 +84,19 @@ extension Form {
         public var dataDecodingStrategy: Form.Decoder.DataDecodingStrategy
         public var dateDecodingStrategy: Form.Decoder.DateDecodingStrategy
         public var arrayParsingStrategy: Form.Decoder.ArrayParsingStrategy
+        public var boolDecodingStrategy: Form.Decoder.BoolDecodingStrategy
         public let userInfo: [CodingUserInfoKey: Any] = [:]
 
         public init(
             dataDecodingStrategy: Form.Decoder.DataDecodingStrategy = .deferredToData,
             dateDecodingStrategy: Form.Decoder.DateDecodingStrategy = .deferredToDate,
-            arrayParsingStrategy: Form.Decoder.ArrayParsingStrategy = .accumulateValues
+            arrayParsingStrategy: Form.Decoder.ArrayParsingStrategy = .accumulateValues,
+            boolDecodingStrategy: Form.Decoder.BoolDecodingStrategy = .trueFalse
         ) {
             self.dataDecodingStrategy = dataDecodingStrategy
             self.dateDecodingStrategy = dateDecodingStrategy
             self.arrayParsingStrategy = arrayParsingStrategy
+            self.boolDecodingStrategy = boolDecodingStrategy
         }
 
         public func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
@@ -298,7 +302,7 @@ extension Form {
             }
 
             func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
-                return try self.unwrap(key, isTrue)
+                return try self.unwrap(key, self.decoder.boolDecodingStrategy.decode)
             }
 
             func decode(_ type: Int.Type, forKey key: Key) throws -> Int {
@@ -575,6 +579,7 @@ extension Form {
                 decoder.dataDecodingStrategy = self.decoder.dataDecodingStrategy
                 decoder.dateDecodingStrategy = self.decoder.dateDecodingStrategy
                 decoder.arrayParsingStrategy = self.decoder.arrayParsingStrategy
+                decoder.boolDecodingStrategy = self.decoder.boolDecodingStrategy
                 return decoder
             }
         }
@@ -634,7 +639,7 @@ extension Form {
             }
 
             mutating func decode(_ type: Bool.Type) throws -> Bool {
-                return try self.unwrap(isTrue)
+                return try self.unwrap(self.decoder.boolDecodingStrategy.decode)
             }
 
             mutating func decode(_ type: Int.Type) throws -> Int {
@@ -765,6 +770,7 @@ extension Form {
                 decoder.dataDecodingStrategy = self.decoder.dataDecodingStrategy
                 decoder.dateDecodingStrategy = self.decoder.dateDecodingStrategy
                 decoder.arrayParsingStrategy = self.decoder.arrayParsingStrategy
+                decoder.boolDecodingStrategy = self.decoder.boolDecodingStrategy
                 return decoder
             }
         }
@@ -794,7 +800,7 @@ extension Form {
             }
 
             func decode(_ type: Bool.Type) throws -> Bool {
-                return try self.unwrap(isTrue)
+                return try self.unwrap(self.decoder.boolDecodingStrategy.decode)
             }
 
             func decode(_ type: Int.Type) throws -> Int {
@@ -980,6 +986,56 @@ extension Form {
                 _ strategy: @escaping @Sendable (String) -> Date?
             ) -> DateDecodingStrategy {
                 DateDecodingStrategy(decode: strategy)
+            }
+        }
+
+        /// A strategy for decoding Bool values from URL form data.
+        ///
+        /// You can use one of the built-in strategies or create your own custom strategy.
+        ///
+        /// ## Built-in Strategies
+        /// - ``trueFalse``: Accepts `"1"` and `"true"` (case-insensitive) as true; everything
+        ///   else decodes to `false`. (default, and this decoder's current byte-for-byte behavior)
+        /// - ``yesNo``: Additionally accepts `"yes"` (case-insensitive) as true, for round-tripping
+        ///   Mailgun and other legacy form APIs that encode booleans as `"yes"`/`"no"`. Anything
+        ///   not recognized as true, including `"no"`, decodes to `false`.
+        ///
+        /// This decoder never throws on an unrecognized Bool string; it decodes to `false`,
+        /// matching the pre-existing behavior of this decoder.
+        ///
+        /// ## Custom Strategies
+        /// You can create custom strategies by providing your own decoding logic:
+        /// ```swift
+        /// extension Form.Decoder.BoolDecodingStrategy {
+        ///     static let numeric = BoolDecodingStrategy { $0 == "1" }
+        /// }
+        /// ```
+        public struct BoolDecodingStrategy: Sendable {
+            internal let decode: @Sendable (String) -> Bool
+
+            /// Creates a custom bool decoding strategy.
+            /// - Parameter decode: A closure that takes a string and returns the decoded Bool.
+            public init(decode: @escaping @Sendable (String) -> Bool) {
+                self.decode = decode
+            }
+
+            /// Accepts `"1"` and `"true"` (case-insensitive) as true; everything else decodes
+            /// to `false`. (default)
+            public static let trueFalse = BoolDecodingStrategy(decode: isTrue)
+
+            /// Additionally accepts `"yes"` (case-insensitive) as true (Mailgun and other
+            /// legacy form APIs); everything else, including `"no"`, decodes to `false`.
+            ///
+            /// This is an opt-in leniency: the default (``trueFalse``) does not change.
+            public static let yesNo = BoolDecodingStrategy { string in
+                Set(["1", "true", "yes"]).contains(string.lowercased())
+            }
+
+            /// Creates a custom bool decoding strategy
+            public static func custom(
+                _ strategy: @escaping @Sendable (String) -> Bool
+            ) -> BoolDecodingStrategy {
+                BoolDecodingStrategy(decode: strategy)
             }
         }
 
