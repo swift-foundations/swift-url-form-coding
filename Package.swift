@@ -55,9 +55,7 @@ let package = Package(
 )
 
 for target in package.targets {
-    target.swiftSettings?.append(
-        contentsOf: [
-            .enableUpcomingFeature("MemberImportVisibility")
-        ]
-    )
+    target.swiftSettings = (target.swiftSettings ?? []) + [
+        .enableUpcomingFeature("MemberImportVisibility")
+    ]
 }
