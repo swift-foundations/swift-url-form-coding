@@ -42,6 +42,14 @@ let package = Package(
             dependencies: [
                 .urlFormCoding
             ]
+        ),
+        .testTarget(
+            name: "Coder Parity Tests",
+            dependencies: [
+                .urlFormCoding
+            ],
+            path: "Tests/Coder Parity Tests",
+            exclude: ["__Corpus__"]
         )
     ]
 )
