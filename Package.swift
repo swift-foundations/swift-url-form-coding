@@ -44,11 +44,11 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "Coder Parity Tests",
+            name: "URL Form Coding Parity Tests",
             dependencies: [
                 .urlFormCoding
             ],
-            path: "Tests/Coder Parity Tests",
+            path: "Tests/URL Form Coding Parity Tests",
             exclude: ["__Corpus__"]
         )
     ]
