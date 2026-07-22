@@ -10,8 +10,15 @@ extension String { var tests: Self { self + " Tests" } }
 
 extension Target.Dependency {
     static var urlFormCoding: Self { .target(name: .urlFormCoding) }
-    static var rfc2388: Self { .product(name: "RFC 2388", package: "swift-rfc-2388") }
-    static var whatwgUrlEncoding: Self { .product(name: "WHATWG Form URL Encoded", package: "swift-whatwg-url") }
+    static var htmlFormCoder: Self {
+        .product(name: "HTML Form Coder", package: "swift-html-form-coder")
+    }
+    static var htmlFormCoderCodable: Self {
+        .product(name: "HTML Form Coder Codable", package: "swift-html-form-coder")
+    }
+    static var htmlStandard: Self {
+        .product(name: "HTML Standard", package: "swift-html-standard")
+    }
 }
 
 let package = Package(
@@ -26,15 +33,16 @@ let package = Package(
         .library(name: .urlFormCoding, targets: [.urlFormCoding])
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-ietf/swift-rfc-2388.git", branch: "main"),
-        .package(url: "https://github.com/swift-whatwg/swift-whatwg-url.git", branch: "main")
+        .package(url: "https://github.com/swift-foundations/swift-html-form-coder.git", branch: "main"),
+        .package(url: "https://github.com/swift-standards/swift-html-standard.git", branch: "main")
     ],
     targets: [
         .target(
             name: .urlFormCoding,
             dependencies: [
-                .rfc2388,
-                .whatwgUrlEncoding
+                .htmlFormCoder,
+                .htmlFormCoderCodable,
+                .htmlStandard,
             ]
         ),
         .testTarget(
@@ -42,14 +50,6 @@ let package = Package(
             dependencies: [
                 .urlFormCoding
             ]
-        ),
-        .testTarget(
-            name: "URL Form Coding Parity Tests",
-            dependencies: [
-                .urlFormCoding
-            ],
-            path: "Tests/URL Form Coding Parity Tests",
-            exclude: ["__Corpus__"]
         )
     ]
 )
