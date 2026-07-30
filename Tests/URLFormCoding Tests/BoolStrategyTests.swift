@@ -94,13 +94,15 @@ struct BoolStrategyTests {
             let decoder = Form.Decoder()
 
             #expect(
-                try decoder.decode(Flag.self, from: Data("name=a&enabled=true".utf8)).enabled == true
+                try decoder.decode(Flag.self, from: Data("name=a&enabled=true".utf8)).enabled
+                    == true
             )
             #expect(
                 try decoder.decode(Flag.self, from: Data("name=a&enabled=1".utf8)).enabled == true
             )
             #expect(
-                try decoder.decode(Flag.self, from: Data("name=a&enabled=false".utf8)).enabled == false
+                try decoder.decode(Flag.self, from: Data("name=a&enabled=false".utf8)).enabled
+                    == false
             )
             #expect(
                 try decoder.decode(Flag.self, from: Data("name=a&enabled=0".utf8)).enabled == false
@@ -108,7 +110,8 @@ struct BoolStrategyTests {
 
             // Unchanged default behavior: "yes" is NOT recognized as true unless opted in.
             #expect(
-                try decoder.decode(Flag.self, from: Data("name=a&enabled=yes".utf8)).enabled == false
+                try decoder.decode(Flag.self, from: Data("name=a&enabled=yes".utf8)).enabled
+                    == false
             )
         }
 
@@ -117,10 +120,12 @@ struct BoolStrategyTests {
             let decoder = Form.Decoder(boolDecodingStrategy: .trueFalse)
 
             #expect(
-                try decoder.decode(Flag.self, from: Data("name=a&enabled=true".utf8)).enabled == true
+                try decoder.decode(Flag.self, from: Data("name=a&enabled=true".utf8)).enabled
+                    == true
             )
             #expect(
-                try decoder.decode(Flag.self, from: Data("name=a&enabled=yes".utf8)).enabled == false
+                try decoder.decode(Flag.self, from: Data("name=a&enabled=yes".utf8)).enabled
+                    == false
             )
         }
 
@@ -136,7 +141,8 @@ struct BoolStrategyTests {
             )
             // Existing true-forms still accepted.
             #expect(
-                try decoder.decode(Flag.self, from: Data("name=a&enabled=true".utf8)).enabled == true
+                try decoder.decode(Flag.self, from: Data("name=a&enabled=true".utf8)).enabled
+                    == true
             )
             #expect(
                 try decoder.decode(Flag.self, from: Data("name=a&enabled=1".utf8)).enabled == true
@@ -146,7 +152,8 @@ struct BoolStrategyTests {
                 try decoder.decode(Flag.self, from: Data("name=a&enabled=no".utf8)).enabled == false
             )
             #expect(
-                try decoder.decode(Flag.self, from: Data("name=a&enabled=false".utf8)).enabled == false
+                try decoder.decode(Flag.self, from: Data("name=a&enabled=false".utf8)).enabled
+                    == false
             )
         }
 
@@ -158,7 +165,8 @@ struct BoolStrategyTests {
                 try decoder.decode(Flag.self, from: Data("name=a&enabled=on".utf8)).enabled == true
             )
             #expect(
-                try decoder.decode(Flag.self, from: Data("name=a&enabled=true".utf8)).enabled == false
+                try decoder.decode(Flag.self, from: Data("name=a&enabled=true".utf8)).enabled
+                    == false
             )
         }
     }
