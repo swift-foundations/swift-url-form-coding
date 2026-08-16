@@ -72,7 +72,7 @@ struct DebuggingNSErrorTests {
     }
 
     // Test encoding error objects
-    enum TestError: Error, Codable {
+    enum TestError: Swift.Error, Codable {
         case someError
     }
 
