@@ -97,7 +97,7 @@ struct ErrorErgonomicsTest {
         let emptyBracketsData = Data("tags[]=swift&tags[]=ios".utf8)
 
         // Helper to detect strategy
-        func detectStrategy(from data: Data) -> String {
+        func detectStrategy(from data: Foundation.Data) -> String {
             let string = String(data: data, encoding: .utf8) ?? ""
             if string.contains("[0]") || string.contains("[1]") {
                 return "bracketsWithIndices"
