@@ -173,7 +173,7 @@ struct ThreadSafetyTests {
         }
 
         // Create multiple encoding tasks
-        let results = try await withThrowingTaskGroup(of: Data.self) { group in
+        let results = try await withThrowingTaskGroup(of: Foundation.Data.self) { group in
             for i in 0..<100 {
                 group.addTask {
                     let encoder = HTML.Form.Coder.Encoder()  // Create encoder per task
@@ -182,7 +182,7 @@ struct ThreadSafetyTests {
                 }
             }
 
-            var collected: [Data] = []
+            var collected: [Foundation.Data] = []
             for try await result in group {
                 collected.append(result)
             }

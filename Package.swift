@@ -24,17 +24,20 @@ extension Target.Dependency {
 let package = Package(
     name: "swift-url-form-coding",
     platforms: [
-        .macOS(.v26),
-        .iOS(.v26),
-        .tvOS(.v26),
-        .watchOS(.v26)
+        .macOS("27"),
+        .iOS("27"),
+        .tvOS("27"),
+        .watchOS("27"),
     ],
     products: [
         .library(name: .urlFormCoding, targets: [.urlFormCoding])
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-foundations/swift-html-form-coder.git", branch: "main"),
-        .package(url: "https://github.com/swift-standards/swift-html-standard.git", branch: "main")
+        .package(
+            url: "https://github.com/swift-foundations/swift-html-form-coder.git",
+            branch: "main"
+        ),
+        .package(url: "https://github.com/swift-standards/swift-html-standard.git", branch: "main"),
     ],
     targets: [
         .target(
@@ -51,12 +54,13 @@ let package = Package(
                 .urlFormCoding,
                 .htmlStandard,
             ]
-        )
+        ),
     ]
 )
 
 for target in package.targets {
-    target.swiftSettings = (target.swiftSettings ?? []) + [
-        .enableUpcomingFeature("MemberImportVisibility")
-    ]
+    target.swiftSettings =
+        (target.swiftSettings ?? []) + [
+            .enableUpcomingFeature("MemberImportVisibility")
+        ]
 }

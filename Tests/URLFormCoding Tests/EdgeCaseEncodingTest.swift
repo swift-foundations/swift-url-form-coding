@@ -20,7 +20,7 @@ struct EdgeCaseEncodingTests {
         let optionalBool: Bool?
         let optionalDouble: Double?
         let optionalDate: Date?
-        let optionalData: Data?
+        let optionalData: Foundation.Data?
         let requiredString: String
     }
 
