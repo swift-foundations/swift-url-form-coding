@@ -1,17 +1,18 @@
 //
-//  Form.Decoder Tests.swift
+//  HTML.Form.Coder.Decoder Tests.swift
 //  URLFormCoding Tests
 //
 //  Created by Coen ten Thije Boonkkamp on 26/07/2025.
 //
 
 import Foundation
+import HTML_Standard
 import Testing
 import URLFormCoding
 
 // MARK: - Main Test Suite
 
-@Suite("Form.Decoder Tests")
+@Suite("HTML.Form.Coder.Decoder Tests")
 struct FormDecoderTests {
 
     // MARK: - Basic Decoding Tests
@@ -21,7 +22,7 @@ struct FormDecoderTests {
 
         @Test("Decodes basic types correctly")
         func testDecodesBasicTypesCorrectly() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=John%20Doe&age=30&isActive=true"
             let data = Data(queryString.utf8)
 
@@ -34,7 +35,7 @@ struct FormDecoderTests {
 
         @Test("Decodes URL encoded strings correctly")
         func testDecodesURLEncodedStringsCorrectly() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=John%26Jane&age=25&isActive=false"
             let data = Data(queryString.utf8)
 
@@ -47,7 +48,7 @@ struct FormDecoderTests {
 
         @Test("Handles plus-encoded spaces")
         func testHandlesPlusEncodedSpaces() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=John+Doe&age=35&isActive=true"
             let data = Data(queryString.utf8)
 
@@ -60,7 +61,7 @@ struct FormDecoderTests {
 
         @Test("Handles empty strings")
         func testHandlesEmptyStrings() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=&age=0&isActive=false"
             let data = Data(queryString.utf8)
 
@@ -73,7 +74,7 @@ struct FormDecoderTests {
 
         @Test("Handles different boolean representations")
         func testHandlesDifferentBooleanRepresentations() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
 
             // Test "true"
             var queryString = "name=Test&age=1&isActive=true"
@@ -108,7 +109,7 @@ struct FormDecoderTests {
 
         @Test("Decodes nested objects with brackets strategy")
         func testDecodesNestedObjectsWithBracketsStrategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString =
@@ -124,7 +125,7 @@ struct FormDecoderTests {
 
         @Test("Handles nested objects with nil optionals")
         func testHandlesNestedObjectsWithNilOptionals() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString = "name=Bob&profile[bio]=Designer"
@@ -152,7 +153,7 @@ struct FormDecoderTests {
                 }
             }
 
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString = "name=Charlie&profile[info][bio]=Deep%20Developer"
@@ -172,7 +173,7 @@ struct FormDecoderTests {
 
         @Test("Decodes arrays with accumulate values strategy")
         func testDecodesArraysWithAccumulateValuesStrategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .accumulateValues
 
             let queryString =
@@ -188,7 +189,7 @@ struct FormDecoderTests {
 
         @Test("Decodes arrays with brackets strategy")
         func testDecodesArraysWithBracketsStrategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString =
@@ -204,7 +205,7 @@ struct FormDecoderTests {
 
         @Test("Decodes arrays with bracketsWithIndices strategy")
         func testDecodesArraysWithBracketsWithIndicesStrategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .bracketsWithIndices
 
             let queryString =
@@ -220,7 +221,7 @@ struct FormDecoderTests {
 
         @Test("Handles empty arrays")
         func testHandlesEmptyArrays() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .accumulateValues
 
             let queryString = "name=Frank"
@@ -235,13 +236,13 @@ struct FormDecoderTests {
                 )
             } catch {
                 // This is expected behavior for missing required fields
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
 
         @Test("Handles arrays with single element")
         func testHandlesArraysWithSingleElement() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .accumulateValues
 
             let queryString = "name=Grace&tags=admin&scores=100"
@@ -256,7 +257,7 @@ struct FormDecoderTests {
 
         @Test("Handles out-of-order indexed arrays")
         func testHandlesOutOfOrderIndexedArrays() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .bracketsWithIndices
 
             let queryString =
@@ -278,7 +279,7 @@ struct FormDecoderTests {
 
         @Test("Decodes present optional values")
         func testDecodesPresentOptionalValues() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=Frank&email=frank%40example.com&age=28&isVerified=true"
             let data = Data(queryString.utf8)
 
@@ -292,7 +293,7 @@ struct FormDecoderTests {
 
         @Test("Handles missing optional values")
         func testHandlesMissingOptionalValues() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=Grace"
             let data = Data(queryString.utf8)
 
@@ -306,7 +307,7 @@ struct FormDecoderTests {
 
         @Test("Handles empty optional values")
         func testHandlesEmptyOptionalValues() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=Helen&email=&age=&isVerified="
             let data = Data(queryString.utf8)
 
@@ -320,7 +321,7 @@ struct FormDecoderTests {
 
         @Test("Handles mixed optional values")
         func testHandlesMixedOptionalValues() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=Ian&email=ian%40test.com&isVerified=false"
             let data = Data(queryString.utf8)
 
@@ -340,7 +341,7 @@ struct FormDecoderTests {
 
         @Test("Decodes dates with default strategy")
         func testDecodesDatesWithDefaultStrategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
 
             // Default strategy should handle ISO8601 or timestamp
             let queryString = "name=Jack&createdAt=1234567890.0"
@@ -352,13 +353,13 @@ struct FormDecoderTests {
                 // Default strategy behavior is implementation-specific
             } catch {
                 // Default strategy might not handle timestamps - that's acceptable
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
 
         @Test("Decodes dates as seconds since 1970")
         func testDecodesDatesAsSecondsSince1970() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.dateDecodingStrategy = .secondsSince1970
 
             let queryString = "name=Kate&createdAt=1234567890"
@@ -373,7 +374,7 @@ struct FormDecoderTests {
 
         @Test("Decodes dates as milliseconds since 1970")
         func testDecodesDatesAsMillisecondsSince1970() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.dateDecodingStrategy = .millisecondsSince1970
 
             let queryString = "name=Liam&createdAt=1234567890000"
@@ -388,7 +389,7 @@ struct FormDecoderTests {
 
         @Test("Decodes dates with ISO8601 strategy")
         func testDecodesDatesWithISO8601Strategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.dateDecodingStrategy = .iso8601
 
             let queryString = "name=Maya&createdAt=2009-02-13T23%3A31%3A30.000Z"
@@ -402,7 +403,7 @@ struct FormDecoderTests {
 
         @Test("Decodes dates with custom formatter")
         func testDecodesDatesWithCustomFormatter() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
             formatter.timeZone = TimeZone(identifier: "UTC")
@@ -421,7 +422,7 @@ struct FormDecoderTests {
 
         @Test("Handles optional dates")
         func testHandlesOptionalDates() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.dateDecodingStrategy = .secondsSince1970
 
             let queryString = "name=Olivia&createdAt=1234567890"
@@ -442,7 +443,7 @@ struct FormDecoderTests {
 
         @Test("Decodes data with base64 strategy")
         func testDecodesDataWithBase64Strategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.dataDecodingStrategy = .base64
 
             let testData = Data("Hello World".utf8)
@@ -459,7 +460,7 @@ struct FormDecoderTests {
 
         @Test("Decodes data with custom strategy")
         func testDecodesDataWithCustomStrategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.dataDecodingStrategy = .custom { string in
                 // Custom strategy: convert from hex string
                 var data = Data()
@@ -488,7 +489,7 @@ struct FormDecoderTests {
 
         @Test("Handles optional data fields")
         func testHandlesOptionalDataFields() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.dataDecodingStrategy = .base64
 
             let testData = Data("Test".utf8)
@@ -511,7 +512,7 @@ struct FormDecoderTests {
 
         @Test("AccumulateValues strategy works correctly")
         func testAccumulateValuesStrategyWorksCorrectly() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .accumulateValues
 
             let queryString =
@@ -527,7 +528,7 @@ struct FormDecoderTests {
 
         @Test("Brackets strategy works correctly")
         func testBracketsStrategyWorksCorrectly() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString = "name=Tina&profile[bio]=Developer&profile[website]=https%3A//tina.dev"
@@ -542,7 +543,7 @@ struct FormDecoderTests {
 
         @Test("BracketsWithIndices strategy works correctly")
         func testBracketsWithIndicesStrategyWorksCorrectly() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .bracketsWithIndices
 
             let queryString = "name=Uma&tags[0]=swift&tags[1]=vapor&scores[0]=95&scores[1]=88"
@@ -557,12 +558,12 @@ struct FormDecoderTests {
 
         @Test("Custom parsing strategy works correctly")
         func testCustomParsingStrategyWorksCorrectly() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
 
             // Simple custom strategy - just pass through to test that custom function is called
             decoder.arrayParsingStrategy = .custom { query in
                 // Just use the default accumulate values parsing, but demonstrate custom strategy works
-                var params: [String: Form.Decoder.Container] = [:]
+                var params: [String: HTML.Form.Coder.Decoder.Container] = [:]
                 let pairs = query.split(separator: "&")
 
                 for pair in pairs {
@@ -574,19 +575,19 @@ struct FormDecoderTests {
                         if let existing = params[key] {
                             // If key exists, convert to array or append to array
                             if case .singleValue(let existingValue) = existing {
-                                let existingContainer = Form.Decoder.Container.singleValue(
+                                let existingContainer = HTML.Form.Coder.Decoder.Container.singleValue(
                                     existingValue
                                 )
-                                let newContainer = Form.Decoder.Container.singleValue(value)
+                                let newContainer = HTML.Form.Coder.Decoder.Container.singleValue(value)
                                 params[key] = .unkeyed([existingContainer, newContainer])
                             } else if case .unkeyed(let existingValues) = existing {
                                 var newValues = existingValues
-                                let valueContainer = Form.Decoder.Container.singleValue(value)
+                                let valueContainer = HTML.Form.Coder.Decoder.Container.singleValue(value)
                                 newValues.append(valueContainer)
                                 params[key] = .unkeyed(newValues)
                             }
                         } else {
-                            let container = Form.Decoder.Container.singleValue(value)
+                            let container = HTML.Form.Coder.Decoder.Container.singleValue(value)
                             params[key] = container
                         }
                     }
@@ -613,7 +614,7 @@ struct FormDecoderTests {
 
         @Test("Throws error for missing required fields")
         func testThrowsErrorForMissingRequiredFields() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "age=25"  // Missing required 'name' field
             let data = Data(queryString.utf8)
 
@@ -621,13 +622,13 @@ struct FormDecoderTests {
                 _ = try decoder.decode(BasicUser.self, from: data)
                 #expect(Bool(false), "Expected decoding to throw an error")
             } catch {
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
 
         @Test("Throws error for invalid number format")
         func testThrowsErrorForInvalidNumberFormat() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=Test&age=not_a_number&isActive=true"
             let data = Data(queryString.utf8)
 
@@ -635,20 +636,20 @@ struct FormDecoderTests {
                 _ = try decoder.decode(BasicUser.self, from: data)
                 #expect(Bool(false), "Expected decoding to throw an error")
             } catch {
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
 
         @Test("Provides helpful error messages")
         func testProvidesHelpfulErrorMessages() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=Test&age=invalid&isActive=true"
             let data = Data(queryString.utf8)
 
             do {
                 _ = try decoder.decode(BasicUser.self, from: data)
                 #expect(Bool(false), "Expected decoding to throw an error")
-            } catch let error as Form.Decoder.Error {
+            } catch let error as HTML.Form.Coder.Decoder.Error {
                 switch error {
                 case .decodingError(let message, _):
                     #expect(message.contains("Int") || message.contains("age"))
@@ -656,7 +657,7 @@ struct FormDecoderTests {
                 }
             } catch {
                 // Any error is acceptable for invalid input
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
     }
@@ -668,7 +669,7 @@ struct FormDecoderTests {
 
         @Test("Safely handles malformed percent encoding")
         func testSafelyHandlesMalformedPercentEncoding() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
 
             // Malformed percent encoding should be handled gracefully
             let malformedQuery = "name=test%2&age=30&isActive=true"
@@ -682,13 +683,13 @@ struct FormDecoderTests {
                 #expect(user.isActive == true)
             } catch {
                 // If it fails, it should fail gracefully with proper error
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
 
         @Test("Handles extremely long field names safely")
         func testHandlesExtremelyLongFieldNamesSafely() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let longFieldName = String(repeating: "a", count: 100000)
             let queryString = "\(longFieldName)=value&age=30&isActive=true"
             let data = Data(queryString.utf8)
@@ -698,13 +699,13 @@ struct FormDecoderTests {
                 _ = try decoder.decode(BasicUser.self, from: data)
             } catch {
                 // Failure is acceptable for invalid field names
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
 
         @Test("Handles deeply nested bracket injection attempts")
         func testHandlesDeeplyNestedBracketInjectionAttempts() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             // Test with reasonable nesting depth to avoid stack overflow
@@ -721,7 +722,7 @@ struct FormDecoderTests {
                 _ = try decoder.decode([String: String].self, from: data)
             } catch {
                 // Failure is acceptable for malformed input
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
     }
@@ -733,7 +734,7 @@ struct FormDecoderTests {
 
         @Test("Handles very long query strings")
         func testHandlesVeryLongQueryStrings() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let longValue = String(repeating: "a", count: 10000)
             let encoded =
                 longValue.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
@@ -749,7 +750,7 @@ struct FormDecoderTests {
 
         @Test("Handles Unicode characters")
         func testHandlesUnicodeCharacters() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=José%20María%20🇪🇸&age=30&isActive=true"
             let data = Data(queryString.utf8)
 
@@ -761,7 +762,7 @@ struct FormDecoderTests {
 
         @Test("Handles malformed query strings gracefully")
         func testHandlesMalformedQueryStringsGracefully() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=Test&age=25&isActive=true&malformed&another=value"
             let data = Data(queryString.utf8)
 
@@ -775,7 +776,7 @@ struct FormDecoderTests {
 
         @Test("Handles duplicate keys correctly based on strategy")
         func testHandlesDuplicateKeysCorrectlyBasedOnStrategy() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .accumulateValues
 
             let queryString = "name=First&name=Second&name=Third&age=25&isActive=true"
@@ -790,7 +791,7 @@ struct FormDecoderTests {
 
         @Test("Handles large numbers")
         func testHandlesLargeNumbers() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             let queryString = "name=Test&age=\(Int.max)&isActive=false"
             let data = Data(queryString.utf8)
 
@@ -807,8 +808,8 @@ struct FormDecoderTests {
 
         @Test("Round-trips with encoder using default strategies")
         func testRoundTripsWithEncoderUsingDefaultStrategies() throws {
-            let encoder = Form.Encoder()
-            let decoder = Form.Decoder()
+            let encoder = HTML.Form.Coder.Encoder()
+            let decoder = HTML.Form.Coder.Decoder()
 
             let original = BasicUser(name: "Test User", age: 42, isActive: true)
 
@@ -820,8 +821,8 @@ struct FormDecoderTests {
 
         @Test("Round-trips arrays with matching strategies")
         func testRoundTripsArraysWithMatchingStrategies() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-            let decoder = Form.Decoder(arrayParsingStrategy: .bracketsWithIndices)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+            let decoder = HTML.Form.Coder.Decoder(arrayParsingStrategy: .bracketsWithIndices)
 
             let original = UserWithArrays(
                 name: "Array User",
@@ -837,8 +838,8 @@ struct FormDecoderTests {
 
         @Test("Round-trips dates with matching strategies")
         func testRoundTripsDatessWithMatchingStrategies() throws {
-            let encoder = Form.Encoder(dateEncodingStrategy: .secondsSince1970)
-            let decoder = Form.Decoder(dateDecodingStrategy: .secondsSince1970)
+            let encoder = HTML.Form.Coder.Encoder(dateEncodingStrategy: .secondsSince1970)
+            let decoder = HTML.Form.Coder.Decoder(dateDecodingStrategy: .secondsSince1970)
 
             let date = Date(timeIntervalSince1970: 1_234_567_890)
             let original = UserWithDates(
@@ -855,8 +856,8 @@ struct FormDecoderTests {
 
         @Test("Round-trips data with matching strategies")
         func testRoundTripsDataWithMatchingStrategies() throws {
-            let encoder = Form.Encoder(dataEncodingStrategy: .base64)
-            let decoder = Form.Decoder(dataDecodingStrategy: .base64)
+            let encoder = HTML.Form.Coder.Encoder(dataEncodingStrategy: .base64)
+            let decoder = HTML.Form.Coder.Decoder(dataDecodingStrategy: .base64)
 
             let testData = Data("Hello World".utf8)
             let original = UserWithData(
@@ -879,7 +880,7 @@ struct FormDecoderTests {
 
         @Test("Decodes large query strings efficiently")
         func testDecodesLargeQueryStringsEfficiently() throws {
-            let decoder = Form.Decoder(arrayParsingStrategy: .accumulateValues)
+            let decoder = HTML.Form.Coder.Decoder(arrayParsingStrategy: .accumulateValues)
 
             // Create a large query string with many repeated keys
             var components: [String] = ["name=Performance%20Test"]
@@ -900,7 +901,7 @@ struct FormDecoderTests {
 
         @Test("Parses complex nested structures efficiently")
         func testParsesComplexNestedStructuresEfficiently() throws {
-            let decoder = Form.Decoder(arrayParsingStrategy: .brackets)
+            let decoder = HTML.Form.Coder.Decoder(arrayParsingStrategy: .brackets)
 
             // Create complex nested structure
             var components: [String] = ["name=Complex%20Test"]
@@ -918,7 +919,7 @@ struct FormDecoderTests {
                 // Completed successfully - performance is acceptable
             } catch {
                 // Failed gracefully - also acceptable for this edge case
-                #expect(error is Form.Decoder.Error)
+                #expect(error is HTML.Form.Coder.Decoder.Error)
             }
         }
     }
@@ -926,8 +927,8 @@ struct FormDecoderTests {
 
 // MARK: - Helper Functions
 
-private func accumulateValues(_ query: String) -> Form.Decoder.Container {
-    var params: [String: Form.Decoder.Container] = [:]
+private func accumulateValues(_ query: String) -> HTML.Form.Coder.Decoder.Container {
+    var params: [String: HTML.Form.Coder.Decoder.Container] = [:]
     var accumulator: [String: [String]] = [:]
 
     // First, accumulate all values
@@ -938,10 +939,10 @@ private func accumulateValues(_ query: String) -> Form.Decoder.Container {
     // Then create appropriate containers
     for (name, values) in accumulator {
         if values.count == 1 {
-            let container = Form.Decoder.Container.singleValue(values[0])
+            let container = HTML.Form.Coder.Decoder.Container.singleValue(values[0])
             params[name] = container
         } else {
-            let containers = values.map { Form.Decoder.Container.singleValue($0) }
+            let containers = values.map { HTML.Form.Coder.Decoder.Container.singleValue($0) }
             params[name] = .unkeyed(containers)
         }
     }

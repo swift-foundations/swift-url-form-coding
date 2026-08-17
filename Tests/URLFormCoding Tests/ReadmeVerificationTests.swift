@@ -1,3 +1,4 @@
+import HTML_Standard
 import Testing
 
 @testable import URLFormCoding
@@ -14,7 +15,7 @@ struct ReadmeVerificationTests {
         }
 
         // Encoding
-        let encoder = Form.Encoder()
+        let encoder = HTML.Form.Coder.Encoder()
         let user = User(name: "John Doe", email: "john@example.com", age: 30)
         let formData = try encoder.encode(user)
 
@@ -22,7 +23,7 @@ struct ReadmeVerificationTests {
         #expect(formData.count > 0)
 
         // Decoding
-        let decoder = Form.Decoder()
+        let decoder = HTML.Form.Coder.Decoder()
         let decodedUser = try decoder.decode(User.self, from: formData)
 
         // Verify round-trip
@@ -40,19 +41,19 @@ struct ReadmeVerificationTests {
         let query = SearchQuery(tags: ["swift", "ios", "server"])
 
         // Accumulate Values (default)
-        let encoder1 = Form.Encoder()
+        let encoder1 = HTML.Form.Coder.Encoder()
         encoder1.arrayEncodingStrategy = .accumulateValues
         let data1 = try encoder1.encode(query)
         #expect(data1.count > 0)
 
         // Brackets (PHP/Rails style)
-        let encoder2 = Form.Encoder()
+        let encoder2 = HTML.Form.Coder.Encoder()
         encoder2.arrayEncodingStrategy = .brackets
         let data2 = try encoder2.encode(query)
         #expect(data2.count > 0)
 
         // Indexed Brackets
-        let encoder3 = Form.Encoder()
+        let encoder3 = HTML.Form.Coder.Encoder()
         encoder3.arrayEncodingStrategy = .bracketsWithIndices
         let data3 = try encoder3.encode(query)
         #expect(data3.count > 0)
