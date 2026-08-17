@@ -209,7 +209,9 @@ struct ThreadSafetyTests {
             for data in testData {
                 group.addTask {
                     // Create decoder per task
-                    let decoder = HTML.Form.Coder.Decoder(arrayParsingStrategy: .bracketsWithIndices)
+                    let decoder = HTML.Form.Coder.Decoder(
+                        arrayParsingStrategy: .bracketsWithIndices
+                    )
                     return try decoder.decode(Model.self, from: data)
                 }
             }
