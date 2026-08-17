@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HTML_Standard
 import Testing
 import URLFormCoding
 
@@ -54,7 +55,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Encodes simple string array with brackets")
         func testEncodesSimpleStringArray() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
             let model = SimpleArrayModel(tags: ["swift", "ios", "server"])
             let data = try encoder.encode(model)
@@ -75,7 +76,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Encodes multiple arrays with brackets")
         func testEncodesMultipleArrays() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
             let model = MultipleArraysModel(
                 tags: ["swift", "ios"],
@@ -101,7 +102,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Encodes empty arrays correctly")
         func testEncodesEmptyArrays() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
             let model = SimpleArrayModel(tags: [])
             let data = try encoder.encode(model)
@@ -113,7 +114,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Encodes single element array with brackets")
         func testEncodesSingleElementArray() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
             let model = SimpleArrayModel(tags: ["swift"])
             let data = try encoder.encode(model)
@@ -125,7 +126,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Encodes number arrays with brackets")
         func testEncodesNumberArrays() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
             let model = NumberArrayModel(
                 numbers: [1, 2, 3],
@@ -148,7 +149,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Encodes nested objects with arrays using brackets")
         func testEncodesNestedObjectsWithArrays() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
             let model = NestedObjectWithArrays(
                 user: NestedObjectWithArrays.User(
@@ -174,7 +175,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Decodes simple array with brackets")
         func testDecodesSimpleArrayWithBrackets() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString = "tags[]=swift&tags[]=ios&tags[]=server"
@@ -187,7 +188,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Decodes multiple arrays with brackets")
         func testDecodesMultipleArraysWithBrackets() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString =
@@ -203,7 +204,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Decodes single element array with brackets")
         func testDecodesSingleElementArrayWithBrackets() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString = "tags[]=swift"
@@ -216,7 +217,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Decodes number arrays with brackets")
         func testDecodesNumberArraysWithBrackets() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString =
@@ -231,7 +232,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Decodes nested objects with arrays using brackets")
         func testDecodesNestedObjectsWithArrays() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let queryString =
@@ -252,9 +253,9 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Simple array round-trips correctly")
         func testSimpleArrayRoundTrip() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let original = SimpleArrayModel(tags: ["swift", "ios", "server"])
@@ -267,9 +268,9 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Multiple arrays round-trip correctly")
         func testMultipleArraysRoundTrip() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let original = MultipleArraysModel(
@@ -286,9 +287,9 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Number arrays round-trip correctly")
         func testNumberArraysRoundTrip() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let original = NumberArrayModel(
@@ -304,9 +305,9 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Nested objects with arrays round-trip correctly")
         func testNestedObjectsWithArraysRoundTrip() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             let original = NestedObjectWithArrays(
@@ -332,7 +333,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Decodes PHP/Rails style form data")
         func testDecodesPHPRailsStyleFormData() throws {
-            let decoder = Form.Decoder()
+            let decoder = HTML.Form.Coder.Decoder()
             decoder.arrayParsingStrategy = .brackets
 
             // This is the format commonly used by PHP and Rails
@@ -359,7 +360,7 @@ struct BracketsStrategyEncodingTests {
 
         @Test("Encodes in Mailgun-compatible format")
         func testEncodesMailgunCompatibleFormat() throws {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
 
             struct MailgunMessage: Codable {
                 let from: String

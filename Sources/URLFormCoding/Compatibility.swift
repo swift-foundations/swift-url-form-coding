@@ -2,11 +2,6 @@
 @_exported import HTML_Form_Coder_Codable
 import HTML_Standard
 
-/// Compatibility spelling for the form-coding surface now owned by
-/// `swift-html-form-coder`.
-@available(*, deprecated, renamed: "HTML.Form.Coder")
-public typealias Form = HTML.Form.Coder
-
 extension HTML.Form.Coder.Encoder {
     public typealias DataEncodingStrategy = HTML.Form.Coder.Strategy.Data.Encoding
     public typealias DateEncodingStrategy = HTML.Form.Coder.Strategy.Date.Encoding

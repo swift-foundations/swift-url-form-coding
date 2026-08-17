@@ -60,13 +60,13 @@ struct User: Codable {
 }
 
 // Encoding
-let encoder = Form.Encoder()
+let encoder = HTML.Form.Coder.Encoder()
 let user = User(name: "John Doe", email: "john@example.com", age: 30)
 let formData = try encoder.encode(user)
 // Result: "name=John%20Doe&email=john%40example.com&age=30"
 
 // Decoding
-let decoder = Form.Decoder()
+let decoder = HTML.Form.Coder.Decoder()
 let decodedUser = try decoder.decode(User.self, from: formData)
 ```
 
@@ -80,17 +80,17 @@ struct SearchQuery: Codable {
 let query = SearchQuery(tags: ["swift", "ios", "server"])
 
 // Accumulate Values (default)
-let encoder1 = Form.Encoder()
+let encoder1 = HTML.Form.Coder.Encoder()
 encoder1.arrayEncodingStrategy = .accumulateValues
 // Result: "tags=swift&tags=ios&tags=server"
 
 // Brackets (PHP/Rails style)
-let encoder2 = Form.Encoder()
+let encoder2 = HTML.Form.Coder.Encoder()
 encoder2.arrayEncodingStrategy = .brackets
 // Result: "tags[]=swift&tags[]=ios&tags[]=server"
 
 // Indexed Brackets
-let encoder3 = Form.Encoder()
+let encoder3 = HTML.Form.Coder.Encoder()
 encoder3.arrayEncodingStrategy = .bracketsWithIndices
 // Result: "tags[0]=swift&tags[1]=ios&tags[2]=server"
 ```

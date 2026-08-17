@@ -1,4 +1,5 @@
 import Foundation
+import HTML_Standard
 import Testing
 import URLFormCoding
 
@@ -18,8 +19,8 @@ struct DefaultStrategyMismatchTests {
         )
 
         // Using default encoder (bracketsWithIndices) and decoder (accumulateValues)
-        let encoder = Form.Encoder()
-        let decoder = Form.Decoder()
+        let encoder = HTML.Form.Coder.Encoder()
+        let decoder = HTML.Form.Coder.Decoder()
 
         // Encode
         let encoded = try encoder.encode(original)
@@ -56,8 +57,8 @@ struct DefaultStrategyMismatchTests {
 
         // Test 1: Both use accumulateValues
         do {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .accumulateValues)
-            let decoder = Form.Decoder(arrayParsingStrategy: .accumulateValues)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .accumulateValues)
+            let decoder = HTML.Form.Coder.Decoder(arrayParsingStrategy: .accumulateValues)
 
             let encoded = try encoder.encode(original)
             let encodedString = String(data: encoded, encoding: .utf8)!
@@ -69,8 +70,8 @@ struct DefaultStrategyMismatchTests {
 
         // Test 2: Both use bracketsWithIndices
         do {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-            let decoder = Form.Decoder(arrayParsingStrategy: .bracketsWithIndices)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+            let decoder = HTML.Form.Coder.Decoder(arrayParsingStrategy: .bracketsWithIndices)
 
             let encoded = try encoder.encode(original)
             let encodedString = String(data: encoded, encoding: .utf8)!
@@ -82,8 +83,8 @@ struct DefaultStrategyMismatchTests {
 
         // Test 3: Both use brackets
         do {
-            let encoder = Form.Encoder(arrayEncodingStrategy: .brackets)
-            let decoder = Form.Decoder(arrayParsingStrategy: .brackets)
+            let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
+            let decoder = HTML.Form.Coder.Decoder(arrayParsingStrategy: .brackets)
 
             let encoded = try encoder.encode(original)
             let encodedString = String(data: encoded, encoding: .utf8)!
@@ -102,9 +103,9 @@ struct DefaultStrategyMismatchTests {
         )
 
         // Show what each strategy produces
-        let accumulateEncoder = Form.Encoder(arrayEncodingStrategy: .accumulateValues)
-        let bracketsEncoder = Form.Encoder(arrayEncodingStrategy: .brackets)
-        let indicesEncoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+        let accumulateEncoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .accumulateValues)
+        let bracketsEncoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .brackets)
+        let indicesEncoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
 
         let accumulateOutput = String(data: try accumulateEncoder.encode(model), encoding: .utf8)!
         let bracketsOutput = String(data: try bracketsEncoder.encode(model), encoding: .utf8)!

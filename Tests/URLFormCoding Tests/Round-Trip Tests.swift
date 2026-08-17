@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HTML_Standard
 import Testing
 import URLFormCoding
 
@@ -49,10 +50,10 @@ struct URLFormCodingRoundTripTests {
 
     @Test("Basic array round-trip with accumulate values (default)")
     func testBasicArrayRoundTripWithAccumulateValues() throws {
-        let encoder = Form.Encoder(
+        let encoder = HTML.Form.Coder.Encoder(
             arrayEncodingStrategy: .accumulateValues
         )
-        let decoder = Form.Decoder(
+        let decoder = HTML.Form.Coder.Decoder(
             arrayParsingStrategy: .accumulateValues
         )
 
@@ -69,8 +70,8 @@ struct URLFormCodingRoundTripTests {
 
     @Test("Optional array round-trip with bracketsWithIndices")
     func testOptionalArrayRoundTripWithBracketsWithIndices() throws {
-        let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-        let decoder = Form.Decoder(
+        let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+        let decoder = HTML.Form.Coder.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
 
@@ -90,8 +91,8 @@ struct URLFormCodingRoundTripTests {
 
     @Test("Message request round-trip with bracketsWithIndices (Mailgun scenario)")
     func testMessageRequestRoundTripWithBracketsWithIndices() throws {
-        let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-        let decoder = Form.Decoder(
+        let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+        let decoder = HTML.Form.Coder.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
 
@@ -127,8 +128,8 @@ struct URLFormCodingRoundTripTests {
 
     @Test("Empty arrays round-trip")
     func testEmptyArraysRoundTrip() throws {
-        let encoder = Form.Encoder()
-        let decoder = Form.Decoder(
+        let encoder = HTML.Form.Coder.Encoder()
+        let decoder = HTML.Form.Coder.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
 
@@ -148,8 +149,8 @@ struct URLFormCodingRoundTripTests {
 
     @Test("Nil arrays round-trip")
     func testNilArraysRoundTrip() throws {
-        let encoder = Form.Encoder()
-        let decoder = Form.Decoder(
+        let encoder = HTML.Form.Coder.Encoder()
+        let decoder = HTML.Form.Coder.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
 
@@ -166,8 +167,8 @@ struct URLFormCodingRoundTripTests {
 
     @Test("Mixed types with optional arrays round-trip")
     func testMixedTypesRoundTrip() throws {
-        let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-        let decoder = Form.Decoder(
+        let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+        let decoder = HTML.Form.Coder.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
 
@@ -191,8 +192,8 @@ struct URLFormCodingRoundTripTests {
 
     @Test("Mixed types with nil optionals round-trip")
     func testMixedTypesWithNilsRoundTrip() throws {
-        let encoder = Form.Encoder()
-        let decoder = Form.Decoder(
+        let encoder = HTML.Form.Coder.Encoder()
+        let decoder = HTML.Form.Coder.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
 
@@ -215,9 +216,9 @@ struct URLFormCodingRoundTripTests {
 
     @Test("Arrays fail with mismatched strategies")
     func testArraysFailWithMismatchedStrategies() throws {
-        let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+        let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
         // Using default decoder (accumulateValues) when encoder produces bracketed indices
-        let decoder = Form.Decoder()
+        let decoder = HTML.Form.Coder.Decoder()
 
         let original = OptionalArrayModel(
             name: "Test",
@@ -248,11 +249,11 @@ struct URLFormCodingRoundTripTests {
             let tags: [String]?
         }
 
-        let encoder = Form.Encoder(
+        let encoder = HTML.Form.Coder.Encoder(
             dateEncodingStrategy: .secondsSince1970,
             arrayEncodingStrategy: .bracketsWithIndices
         )
-        let decoder = Form.Decoder(
+        let decoder = HTML.Form.Coder.Decoder(
             dateDecodingStrategy: .secondsSince1970,
             arrayParsingStrategy: .bracketsWithIndices
         )
@@ -283,8 +284,8 @@ struct URLFormCodingRoundTripTests {
             let items: [Inner]?
         }
 
-        let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-        let decoder = Form.Decoder(
+        let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+        let decoder = HTML.Form.Coder.Decoder(
             arrayParsingStrategy: .bracketsWithIndices
         )
 

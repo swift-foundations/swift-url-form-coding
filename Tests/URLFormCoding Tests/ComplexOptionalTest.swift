@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HTML_Standard
 import Testing
 import URLFormCoding
 
@@ -25,7 +26,7 @@ struct ComplexOptionalTests {
 
     @Test("Encode optional complex type")
     func testOptionalComplexType() throws {
-        let encoder = Form.Encoder()
+        let encoder = HTML.Form.Coder.Encoder()
 
         // With nil
         let withNil = WithOptionalComplex(complex: nil, simple: "test")
@@ -65,7 +66,7 @@ struct ComplexOptionalTests {
 
     @Test("Encode weird optional type")
     func testWeirdOptionalType() throws {
-        let encoder = Form.Encoder()
+        let encoder = HTML.Form.Coder.Encoder()
 
         let withWeird = WithWeirdOptional(
             weird: WeirdType(),

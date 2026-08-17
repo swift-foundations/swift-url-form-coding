@@ -1,4 +1,5 @@
 import Foundation
+import HTML_Standard
 import Testing
 
 @testable import URLFormCoding
@@ -38,8 +39,8 @@ struct OptionalArrayDecodingTests {
 
     // MARK: - Test Helpers
 
-    let encoder = Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-    let decoder = Form.Decoder(arrayParsingStrategy: .bracketsWithIndices)
+    let encoder = HTML.Form.Coder.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+    let decoder = HTML.Form.Coder.Decoder(arrayParsingStrategy: .bracketsWithIndices)
 
     // MARK: - Tests
 

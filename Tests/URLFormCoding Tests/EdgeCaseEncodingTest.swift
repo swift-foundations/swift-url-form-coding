@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HTML_Standard
 import Testing
 import URLFormCoding
 
@@ -25,7 +26,7 @@ struct EdgeCaseEncodingTests {
 
     @Test("Handles all optional types correctly")
     func testAllOptionalTypes() throws {
-        let encoder = Form.Encoder()
+        let encoder = HTML.Form.Coder.Encoder()
         encoder.dateEncodingStrategy = .secondsSince1970
         encoder.dataEncodingStrategy = .base64
 
@@ -79,7 +80,7 @@ struct EdgeCaseEncodingTests {
 
     @Test("Handles nested optionals correctly")
     func testNestedOptionals() throws {
-        let encoder = Form.Encoder()
+        let encoder = HTML.Form.Coder.Encoder()
 
         // Nil inner
         let nilInner = NestedOptionals(inner: nil, name: "test")
@@ -119,7 +120,7 @@ struct EdgeCaseEncodingTests {
 
     @Test("Handles arrays of optionals correctly")
     func testArrayOfOptionals() throws {
-        let encoder = Form.Encoder()
+        let encoder = HTML.Form.Coder.Encoder()
         encoder.arrayEncodingStrategy = .bracketsWithIndices
 
         let model = ArrayOfOptionals(
@@ -148,7 +149,7 @@ struct EdgeCaseEncodingTests {
 
     @Test("Handles optional enums correctly")
     func testOptionalEnum() throws {
-        let encoder = Form.Encoder()
+        let encoder = HTML.Form.Coder.Encoder()
 
         // Nil enum
         let nilEnum = OptionalEnum(enumValue: nil, name: "test")
